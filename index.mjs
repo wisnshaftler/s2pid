@@ -55,7 +55,7 @@ server.get("/", async (req, res) => {
     let body = ``;
     body += `<div class="col-md-12">  `
     for (let i = 0; i < fileNames.length; i++) {
-        body += `<a class="h4 text-info" style="text-decoration: none;" href="/posts/${fileNames[i].replaceAll(".txt", "")}" >${fileNames[i].replaceAll(".txt", "")}</a> <br>`;
+        body += `<a class="h4 text-info" style="text-decoration: none;" href="/post/${fileNames[i].replaceAll(".txt", "")}" >${fileNames[i].replaceAll(".txt", "")}</a> <br>`;
     }
     body += `</div>`;
     res.render("index", {
@@ -161,6 +161,29 @@ server.post("/api/new-post", async (req, res) => {
 
     res.status(200).send({ status: 1, postStatus: 1})
 });
+
+server.get('/post/:postTitle', async (req, res) => {
+    const postTile = req.params.postTitle.trim();
+
+    const filePath = path.join(__dirname, 'public/posts/', postTile +".txt");
+
+    const fileContent = await new Promise(resolve => {
+        fs.readFile(filePath, "utf-8", (err, data) => {
+            if(err) {
+                return resolve("error");
+            }
+            return resolve(data);
+        });
+    })
+
+    if(fileContent == "error") {
+        return res.redirect("/");
+    }
+
+    res.render("post", {
+        post_body: fileContent
+    })
+})
 
 
 server.listen(SYSTEM_CONFIGS.server_port, () => {
