@@ -1,3 +1,5 @@
 /node_modules
 .env
-confi.mjs
+./config.mjs
+config.mjs
+/config.mjs
