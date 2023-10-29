@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mage Dashboard Aka</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css">
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.0-beta3/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+
+    <style>
+        .note-editable {
+            background: #40414f !important;
+            color: white;
+        }
+    </style>
+
+    <script>
+        async function uploadFile() {
+
+            const formData = new FormData();
+            formData.append("file", document.getElementById("uploadFile").files[0]);
+            formData.append("extension", document.getElementById("file_extension").value);
+
+            console.log(formData);
+
+            fetch("/api/upload", {
+                method: "POST",
+                body: formData,
+            }).then(response => response.json()).then(response => {
+                if(response.status) {
+                    document.getElementById("urls").insertAdjacentHTML("beforeend",'<a class="text-info text-break" href="/files/'+response.filename+'">'+response.filename+"</a>")
+                }
+            });
+        }
+
+        async function savePost() {
+            const newPostData = $('#summernote').summernote('code');
+            const title = document.getElementById("newPostTitle").value.trim();
+            
+            if(title == "") {
+                return alert('Where is the damn title?');
+            }
+
+            const fetchResponse = await fetch("/api/new-post", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ title, newPostData })
+            });
+
+            const response = await fetchResponse.json();
+            if(response.status == 1) {
+                alert("Post saved successfully");
+            } else {
+                alert ("Something went wrong");
+            }
+        }
+    </script>
+</head>
+
+<body class="m-5 mt-5 bg-dark" data-bs-theme="dark">
+
+    <div class="row">
+        <div class="col-2">
+            <form id="uploadFileForm" method="POST" enctype="multipart/form-data">
+                <label for="uploadFile" class="text-info">Choose file</label>
+                <input type="file" id="uploadFile" name="file" placeholder="Upload" required class="form-control" />
+                <br>                <label for="file_extension" class="text-info">File Extension</label>
+                <input type="text" id="file_extension" name="extension" placeholder="File Extension"
+                    class="form-control" />
+                <br>
+            </form>
+            <button type="button" class="btn btn-secondary w-100" onclick="uploadFile();">Upload</button>
+            <hr class="bg-white w-full">
+            <div id="urls"></div>
+        </div>
+        <div class="col-8">
+            <label for="newPostTitle" class="text-info fs-3">Title goes here</label>
+            <input type="text" class="form-control" name="title" id="newPostTitle" placeholder="Type post Title"> 
+            <br />
+            <div id="summernote"></div>
+            <button type="button" class="btn btn-secondary w-100" onclick="savePost()" >Save</button>
+        </div>
+        <div class="col-2"></div>
+    </div>
+    <script>
+        $(document).ready(function () {
+            $("#summernote").summernote({
+                toolbar: [
+                    ['style', ['bold', 'italic', 'underline', 'clear']],
+                    ['font', ['strikethrough', 'superscript', 'subscript']],
+                    ['fontsize', ['fontsize']],
+                    ['color', ['color']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['height', ['height']],
+                    ['view', ['fullscreen', 'codeview', 'help']],
+                    ['insert', ['link', 'picture', 'video']],
+                    ['table', ['table']],
+                ],
+                focus: true,
+                placeholder: "Metana type krnna",
+                height: 500,
+            });
+
+            var styleEle = $("style#fixed");
+            if (styleEle.length == 0) {
+
+                $("<style id=\"fixed\">.note-editor .dropdown-toggle::after { all: unset; } .note-editor .note-dropdown-menu { box-sizing: content-box; } .note-editor .note-modal-footer { box-sizing: content-box; }</style>")
+                    .prependTo("body");
+            }
+            else {
+
+                styleEle.remove();
+            }
+        });
+    </script>
+</body>
+
+</html>
