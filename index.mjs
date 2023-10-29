@@ -55,7 +55,7 @@ server.get("/", async (req, res) => {
     let body = ``;
     body += `<div class="col-md-12">  `
     for (let i = 0; i < fileNames.length; i++) {
-        body += `<a class="h4 text-info" style="text-decoration: none;" href="/post/${fileNames[i].replaceAll(".txt", "")}" >${fileNames[i].replaceAll(".txt", "")}</a> <br>`;
+        body += `<a class="text-2xl" style="text-decoration: none;" href="/post/${fileNames[i].replaceAll(".txt", "")}" >${fileNames[i].replaceAll(".txt", "")}</a> <br><br>`;
     }
     body += `</div>`;
     res.render("index", {
