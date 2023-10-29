@@ -59,7 +59,7 @@ server.get("/", async (req, res) => {
     }
     body += `</div>`;
     res.render("index", {
-        title: "this is my title",
+        title: "wisnshaftler",
         post_body: body
     })
 })
@@ -181,7 +181,8 @@ server.get('/post/:postTitle', async (req, res) => {
     }
 
     res.render("post", {
-        post_body: fileContent
+        post_body: fileContent,
+        title: postTile.replaceAll("-", " ")
     })
 })
 
