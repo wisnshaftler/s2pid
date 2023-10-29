@@ -1,7 +1,9 @@
+import * as dotenv from "dotenv"
+dotenv.config()
 const SYSTEM_CONFIGS = {
-    admin_username: "admin",
-    admin_password: "admin",
-    system_secret: "system_secret",
+    admin_username: process.env.admin_username,
+    admin_password: process.env.admin_password,
+    system_secret: process.env.system_secret,
     server_port: 3000
 }
 
