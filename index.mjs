@@ -47,7 +47,7 @@ server.get("/", async (req, res) => {
             }
 
             // Filter and read each text file
-            const fileNames = files.filter(file => path.extname(file) === '.txt');
+            const fileNames = files.filter(file => path.extname(file) === '.txt' && file.includes("_draft") == false);
             return resolve(fileNames);
         });
     })
